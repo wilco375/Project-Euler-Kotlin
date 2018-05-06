@@ -9,7 +9,7 @@ import kotlin.reflect.jvm.kotlinFunction
 
 // Main function
 fun main(args: Array<String>){
-    for(i in 1..999){
+    for(i in 56..999){
         val start = System.currentTimeMillis()
         val function = getFunction("problem$i") ?: break
         println("Problem $i: ${function.call()} (took ${System.currentTimeMillis() - start} ms)")
@@ -1388,4 +1388,111 @@ fun problem53(): Int{
         }
     }
     return count
+}
+
+fun problem54(): Int{
+    return -1
+}
+
+fun problem55(): Int{
+    return -1
+}
+
+// A googol (10^100) is a massive number: one followed by one-hundred zeros;
+// 100^100 is almost unimaginably large: one followed by two-hundred zeros.
+// Despite their size, the sum of the digits in each number is only 1.
+// Considering natural numbers of the form, a^b, where a, b < 100, what is the maximum digital sum?
+fun problem56(): Int{
+    var max = 0
+    for(a in 1 until 100) {
+        for(b in 1 until 100) {
+            val sum = a.pow(b).digitalSumByS()
+            if(sum > max) {
+                max = sum
+            }
+        }
+    }
+    return max
+}
+
+fun BigInteger.digitalSumByS() : Int {
+    var digitSum = 0
+    this.toString().forEach {
+        digitSum += it - '0'
+    }
+    return digitSum
+}
+
+// If we take 47, reverse and add, 47 + 74 = 121, which is palindromic.
+// Not all numbers produce palindromes so quickly. For example,
+// 349 + 943 = 1292,
+// 1292 + 2921 = 4213
+// 4213 + 3124 = 7337
+// That is, 349 took three iterations to arrive at a palindrome.
+// Although no one has proved it yet, it is thought that some numbers, like 196, never produce a palindrome.
+// A number that never forms a palindrome through the reverse and add process is called a Lychrel number.
+// Due to the theoretical nature of these numbers, and for the purpose of this problem, we shall assume that a number is Lychrel until proven otherwise.
+// In addition you are given that for every number below ten-thousand, it will either
+// (i) become a palindrome in less than fifty iterations, or,
+// (ii) no one, with all the computing power that exists, has managed so far to map it to a palindrome.
+// In fact, 10677 is the first number to be shown to require over fifty iterations before producing a palindrome: 4668731596684224866951378664 (53 iterations, 28-digits).
+// Surprisingly, there are palindromic numbers that are themselves Lychrel numbers; the first example is 4994.
+// How many Lychrel numbers are there below ten-thousand?
+fun problem57(): Int {
+    var count = 0
+    for(i in 0 until 10000) {
+        if(i.isLychrel()) count++
+    }
+    return count
+}
+
+fun Int.isLychrel(): Boolean {
+    var n = this.toBigInteger()
+    for (iter in 0..50) {
+        val sum = n + n.reversed()
+        if(sum.toString().isPalindrome()) return false
+        n = sum
+    }
+    return true
+}
+
+fun BigInteger.reversed(): BigInteger {
+    return BigInteger(this.toString().reversed())
+}
+
+fun problem58(): Int {
+    return -1
+}
+
+// Each character on a computer is assigned a unique code and the preferred standard is ASCII (American Standard Code for Information Interchange).
+// For example, uppercase A = 65, asterisk (*) = 42, and lowercase k = 107.
+// A modern encryption method is to take a text file, convert the bytes to ASCII, then XOR each byte with a given value, taken from a secret key.
+// The advantage with the XOR function is that using the same encryption key on the cipher text, restores the plain text; for example, 65 XOR 42 = 107, then 107 XOR 42 = 65.
+// For unbreakable encryption, the key is the same length as the plain text message, and the key is made up of random bytes.
+// The user would keep the encrypted message and the encryption key in different locations, and without both "halves", it is impossible to decrypt the message.
+// Unfortunately, this method is impractical for most users, so the modified method is to use a password as a key.
+// If the password is shorter than the message, which is likely, the key is repeated cyclically throughout the message.
+// The balance for this method is using a sufficiently long password key for security, but short enough to be memorable.
+// Your task has been made easy, as the encryption key consists of three lower case characters.
+// Using cipher.txt (right click and 'Save Link/Target As...'), a file containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words,
+// decrypt the message and find the sum of the ASCII values in the original text.
+fun problem59(): Int {
+    val size = p059_cipher.size
+    for(a in 97..122) { // Ascii values for 'a'..'z'
+        for(b in 97..122) {
+            key@ for(c in 97..122){
+                val key = arrayOf(a, b, c)
+                val decrypted = ArrayList<Int>()
+                for(i in 0 until size) {
+                    val char = p059_cipher[i].xor(key[i % 3])
+                    if(char < 32 || char > 126) continue@key
+                    decrypted.add(p059_cipher[i].xor(key[i % 3]))
+                }
+                val decryptedString = String(decrypted.map { it.toByte() }.toByteArray())
+                if(decryptedString.contains("the") && !decryptedString.contains("#") && !decryptedString.contains("$"))
+                    return decrypted.sum()
+            }
+        }
+    }
+    return 0
 }
