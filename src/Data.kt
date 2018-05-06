@@ -175,5 +175,9 @@ class Data{
         fun problem42(): Array<String>{
             return p042_names
         }
+
+        fun problem59(): Array<Int>{
+            return p059_cipher
+        }
     }
 }

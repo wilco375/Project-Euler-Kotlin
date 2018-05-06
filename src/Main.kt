@@ -1477,16 +1477,17 @@ fun problem58(): Int {
 // Using cipher.txt (right click and 'Save Link/Target As...'), a file containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words,
 // decrypt the message and find the sum of the ASCII values in the original text.
 fun problem59(): Int {
-    val size = p059_cipher.size
+    val encrypted = Data.problem59()
+    val size = encrypted.size
     for(a in 97..122) { // Ascii values for 'a'..'z'
         for(b in 97..122) {
             key@ for(c in 97..122){
                 val key = arrayOf(a, b, c)
                 val decrypted = ArrayList<Int>()
                 for(i in 0 until size) {
-                    val char = p059_cipher[i].xor(key[i % 3])
-                    if(char < 32 || char > 126) continue@key
-                    decrypted.add(p059_cipher[i].xor(key[i % 3]))
+                    val char = encrypted[i].xor(key[i % 3])
+                    if(char < 32 || char > 126) continue@key // Only characters and punctuation marks allowed
+                    decrypted.add(encrypted[i].xor(key[i % 3]))
                 }
                 val decryptedString = String(decrypted.map { it.toByte() }.toByteArray())
                 if(decryptedString.contains("the") && !decryptedString.contains("#") && !decryptedString.contains("$"))
