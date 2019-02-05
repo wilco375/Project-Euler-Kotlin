@@ -11,7 +11,7 @@ import kotlin.reflect.jvm.kotlinFunction
  * Main method
  */
 fun main() {
-    for (i in 1..999) {
+    for (i in 62..999) {
         val start = System.currentTimeMillis()
         val function = getFunction("problem$i") ?: break
         println("Problem $i: ${function.call()} (took ${System.currentTimeMillis() - start} ms)")
@@ -1962,3 +1962,82 @@ fun problem59(): Int {
     }
     return 0
 }
+
+/**
+ * Problem 60
+ *
+ * Not finished
+ */
+fun problem60(): Int {
+    return -1
+}
+
+/**
+ * Problem 61
+ *
+ * Not finished
+ */
+fun problem61(): Int {
+    return -1
+}
+
+/**
+ * Problem 62
+ *
+ * The cube, 41063625 (3453), can be permuted to produce two other cubes: 56623104 (3843) and 66430125 (4053).
+ * In fact, 41063625 is the smallest cube which has exactly three permutations of its digits which are also cube.
+ * Find the smallest cube for which exactly five permutations of its digits are cube.
+ */
+fun problem62(): Long? {
+    val list = HashMap<Long, Pair<ArrayList<Long>, Int>>()
+    for (i in generateSequence(345L) { it+1 }) {
+        val sorted = (i * i * i).sortDigits()
+        if (list.containsKey(sorted)) {
+            val value = list[sorted]!!
+            list[sorted] = Pair(
+                    value.first.also { it.add(i * i * i) },
+                    value.second + 1
+            )
+        } else {
+            list[sorted] = Pair(
+                    ArrayList<Long>().also { it.add(i * i * i) },
+                    1
+            )
+        }
+        if (list[sorted]!!.second == 5) {
+            return list[sorted]!!.first.min()
+        }
+    }
+
+    return 0L
+}
+
+/**
+ * Sort a numbers digits from highest to lowest
+ * @return a number sorted from highest to lowest digit
+ */
+fun Long.sortDigits(): Long {
+    // We sort the digits from highest to lowest because otherwise the zero's will be at the front
+    // so then 001234 will be the same as 01234 (both return 1234 and the zero's will be cut off)
+    var output = 0L
+    for (i in 9L downTo 0L) {
+        var n = this
+        while (n > 0) {
+            val digit = n % 10
+            if (digit == i)
+                output = output*10 + i
+            n /= 10
+        }
+    }
+    return output
+}
+
+/**
+ * Check if a number is a cube
+ * @return true if and only if there is an integer i such that i^3 == number
+ */
+fun Long.isCube(): Boolean {
+    val pow = Math.pow(this.toDouble(), 1.0/3.0)
+    return pow - pow.toInt() == 0.0
+}
+
